@@ -1,0 +1,4 @@
+main:int() {
+    return:int = 1
+}
+
