@@ -129,7 +129,7 @@ AST *Parser_ParseExpr(Parser *parser)
         return Parser_ParseList(parser); // for example function arguments
     case TOKEN_INT:
         return Parser_ParseInt(parser);
-    default:;
+    default:
         printf("jlang [Parser]: Unexpected token: '%s'\n",
                Tok_to_str(parser->token));
         exit(1);
