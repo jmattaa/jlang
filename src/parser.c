@@ -15,11 +15,8 @@ Token *Parser_Eat(Parser *parser, int type)
 {
     if (parser->token->type != type)
     {
-        printf(
-            "jlang [Parser]: Unexpected token '%s' expected %s\n",
-            Tok_to_str(parser->token),
-            Tok_to_str(Token_Init("", type))
-        );
+        printf("jlang [Parser]: Unexpected token '%s' expected %s\n",
+               Tok_to_str(parser->token), Tok_to_str(Token_Init("", type)));
         exit(1);
     }
 
@@ -27,17 +24,14 @@ Token *Parser_Eat(Parser *parser, int type)
     return parser->token;
 }
 
-AST *Parser_Parse(Parser *parser)
-{
-    return Parser_ParseCompound(parser);
-}
+AST *Parser_Parse(Parser *parser) { return Parser_ParseCompound(parser); }
 
 AST *Parser_ParseId(Parser *parser)
 {
     char *val = calloc(strlen(parser->token->value) + 1, sizeof(char));
     strcpy(val, parser->token->value);
-    
-    // expect name 
+
+    // expect name
     Parser_Eat(parser, TOKEN_ID);
     Parser_Eat(parser, TOKEN_COLON);
     // get the type of the variable
@@ -127,17 +121,18 @@ AST *Parser_ParseInt(Parser *parser)
 
 AST *Parser_ParseExpr(Parser *parser)
 {
-    switch (parser->token->type) 
+    switch (parser->token->type)
     {
-        case TOKEN_ID: return Parser_ParseId(parser);
-        case TOKEN_LPAREN: return Parser_ParseList(parser); // for example function arguments
-        case TOKEN_INT: return Parser_ParseInt(parser);
-        default: ;
-            printf(
-                "jlang [Parser]: Unexpected token: '%s'\n",
-                Tok_to_str(parser->token)
-            );
-            exit (1);
+    case TOKEN_ID:
+        return Parser_ParseId(parser);
+    case TOKEN_LPAREN:
+        return Parser_ParseList(parser); // for example function arguments
+    case TOKEN_INT:
+        return Parser_ParseInt(parser);
+    default:;
+        printf("jlang [Parser]: Unexpected token: '%s'\n",
+               Tok_to_str(parser->token));
+        exit(1);
     }
 }
 
@@ -152,4 +147,3 @@ AST *Parser_ParseCompound(Parser *parser)
 
     return compound;
 }
-

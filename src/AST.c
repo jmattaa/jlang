@@ -11,4 +11,3 @@ AST *AST_Init(int type)
 
     return ast;
 }
-

@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include "include/jlang.h"
 #include "include/IO.h"
+#include "include/jlang.h"
+#include <stdio.h>
 
 int main(int argc, char **argv)
 {
@@ -17,4 +17,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

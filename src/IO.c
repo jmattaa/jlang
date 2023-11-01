@@ -4,7 +4,7 @@ char *IO_ReadFile(const char *filename)
 {
     FILE *file = fopen(filename, "r");
 
-    if (file == NULL) 
+    if (file == NULL)
     {
         perror("JLang [IO]: error opening the file");
     }
@@ -15,16 +15,15 @@ char *IO_ReadFile(const char *filename)
 
     char *file_contents = (char *)malloc(file_size + 1);
 
-    if (file_contents == NULL) 
+    if (file_contents == NULL)
     {
         perror("JLang [IO]: memory allocation error");
     }
 
     fread(file_contents, 1, file_size, file);
-    file_contents[file_size - 1] = '\0'; 
+    file_contents[file_size - 1] = '\0';
 
     fclose(file);
 
     return file_contents;
 }
-

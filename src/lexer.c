@@ -15,7 +15,7 @@ Lexer *Lexer_Init(char *src)
 
 void Lexer_Advance(Lexer *lexer)
 {
-    if (lexer->i < lexer->src_size && lexer->c != '\0') 
+    if (lexer->i < lexer->src_size && lexer->c != '\0')
     {
         lexer->i += 1;
         lexer->c = lexer->src[lexer->i];
@@ -24,8 +24,8 @@ void Lexer_Advance(Lexer *lexer)
 
 void Lexer_SkipWhitespace(Lexer *lexer)
 {
-    while (lexer->c == '\r' || lexer->c == '\n' || 
-            lexer->c == ' ' || lexer->c == '\t')
+    while (lexer->c == '\r' || lexer->c == '\n' || lexer->c == ' ' ||
+           lexer->c == '\t')
         Lexer_Advance(lexer);
 }
 
@@ -70,10 +70,10 @@ Token *Lexer_AdvanceCurrent(Lexer *lexer, int type)
 
 Token *Lexer_NextToken(Lexer *lexer)
 {
-    while (lexer->c != '\0') 
+    while (lexer->c != '\0')
     {
         Lexer_SkipWhitespace(lexer);
-        
+
         if (isalpha(lexer->c))
             return Lexer_ParseId(lexer);
 
@@ -82,21 +82,29 @@ Token *Lexer_NextToken(Lexer *lexer)
 
         switch (lexer->c)
         {
-            case ':': return Lexer_AdvanceCurrent(lexer, TOKEN_COLON);
-            case ',': return Lexer_AdvanceCurrent(lexer, TOKEN_COMMA);
-            case '(': return Lexer_AdvanceCurrent(lexer, TOKEN_LPAREN);
-            case ')': return Lexer_AdvanceCurrent(lexer, TOKEN_RPAREN);
-            case '{': return Lexer_AdvanceCurrent(lexer, TOKEN_LBRACE);
-            case '}': return Lexer_AdvanceCurrent(lexer, TOKEN_RBRACE);
-            case '=': return Lexer_AdvanceCurrent(lexer, TOKEN_EQUALS);
-            case ';': return Lexer_AdvanceCurrent(lexer, TOKEN_SEMI);
-            case '\0': break;
-            default: 
-                printf("jlang [Lexer]: Unexpected character '%c'\n", lexer->c);
-                exit(1);
+        case ':':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_COLON);
+        case ',':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_COMMA);
+        case '(':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_LPAREN);
+        case ')':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_RPAREN);
+        case '{':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_LBRACE);
+        case '}':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_RBRACE);
+        case '=':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_EQUALS);
+        case ';':
+            return Lexer_AdvanceCurrent(lexer, TOKEN_SEMI);
+        case '\0':
+            break;
+        default:
+            printf("jlang [Lexer]: Unexpected character '%c'\n", lexer->c);
+            exit(1);
         }
     }
 
     return Token_Init(0, TOKEN_EOF);
 }
-

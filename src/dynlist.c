@@ -22,4 +22,3 @@ void Dynlist_Append(dynlist *list, void *item)
 
     list->items[list->size] = item;
 }
-

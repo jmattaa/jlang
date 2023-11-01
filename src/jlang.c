@@ -15,4 +15,3 @@ void Jlang_Compile(char *src)
         printf("TOK: <val: '%s', type %d>\n", tok->value, tok->type);
     }
 }
-
