@@ -20,9 +20,9 @@ typedef struct
         TOKEN_SEMI,
         TOKEN_EOF,
     } type;
-} JToken;
+} Token;
 
 // create the token obj
-JToken *JToken_Init(char *value, int type);
+Token *Token_Init(char *value, int type);
 
 #endif

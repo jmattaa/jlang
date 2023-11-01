@@ -1,9 +1,9 @@
 #include "include/lexer.h"
 #include "include/token.h"
 
-JLexer *JLexer_Init(char *src)
+Lexer *Lexer_Init(char *src)
 {
-    JLexer *lexer = calloc(1, sizeof(JLexer));
+    Lexer *lexer = calloc(1, sizeof(Lexer));
 
     lexer->src = src;
     lexer->src_size = strlen(src);
@@ -13,7 +13,7 @@ JLexer *JLexer_Init(char *src)
     return lexer;
 }
 
-void JLexer_Advance(JLexer *lexer)
+void Lexer_Advance(Lexer *lexer)
 {
     if (lexer->i < lexer->src_size && lexer->c != '\0') 
     {
@@ -22,14 +22,14 @@ void JLexer_Advance(JLexer *lexer)
     }
 }
 
-void JLexer_SkipWhitespace(JLexer *lexer)
+void Lexer_SkipWhitespace(Lexer *lexer)
 {
     while (lexer->c == '\r' || lexer->c == '\n' || 
             lexer->c == ' ' || lexer->c == '\t')
-        JLexer_Advance(lexer);
+        Lexer_Advance(lexer);
 }
 
-JToken *JLexer_ParseId(JLexer *lexer)
+Token *Lexer_ParseId(Lexer *lexer)
 {
     char *val = calloc(1, sizeof(char));
 
@@ -38,12 +38,12 @@ JToken *JLexer_ParseId(JLexer *lexer)
         val = realloc(val, (strlen(val) + 2) * sizeof(char));
         strcat(val, (char[]){lexer->c, 0});
 
-        JLexer_Advance(lexer);
+        Lexer_Advance(lexer);
     }
-    return JToken_Init(val, TOKEN_ID);
+    return Token_Init(val, TOKEN_ID);
 }
 
-JToken *JLexer_ParseNum(JLexer *lexer)
+Token *Lexer_ParseNum(Lexer *lexer)
 {
     char *val = calloc(1, sizeof(char));
 
@@ -51,51 +51,51 @@ JToken *JLexer_ParseNum(JLexer *lexer)
     {
         val = realloc(val, (strlen(val) + 2) * sizeof(char));
         strcat(val, (char[]){lexer->c, 0});
-        JLexer_Advance(lexer);
+        Lexer_Advance(lexer);
     }
-    return JToken_Init(val, TOKEN_INT);
+    return Token_Init(val, TOKEN_INT);
 }
 
-JToken *JLexer_AdvanceCurrent(JLexer *lexer, int type)
+Token *Lexer_AdvanceCurrent(Lexer *lexer, int type)
 {
     char *val = calloc(2, sizeof(char));
     val[0] = lexer->c;
     val[1] = '\0';
 
-    JToken *tok = JToken_Init(val, type);
-    JLexer_Advance(lexer);
+    Token *tok = Token_Init(val, type);
+    Lexer_Advance(lexer);
 
     return tok;
 }
 
-JToken *JLexer_NextToken(JLexer *lexer)
+Token *Lexer_NextToken(Lexer *lexer)
 {
     while (lexer->c != '\0') 
     {
-        JLexer_SkipWhitespace(lexer);
+        Lexer_SkipWhitespace(lexer);
         
         if (isalpha(lexer->c))
-            return JLexer_ParseId(lexer);
+            return Lexer_ParseId(lexer);
 
         if (isdigit(lexer->c))
-            return JLexer_ParseNum(lexer);
+            return Lexer_ParseNum(lexer);
 
         switch (lexer->c)
         {
-            case ':': return JLexer_AdvanceCurrent(lexer, TOKEN_COLON);
-            case '(': return JLexer_AdvanceCurrent(lexer, TOKEN_LPAREN);
-            case ')': return JLexer_AdvanceCurrent(lexer, TOKEN_RPAREN);
-            case '{': return JLexer_AdvanceCurrent(lexer, TOKEN_LBRACE);
-            case '}': return JLexer_AdvanceCurrent(lexer, TOKEN_RBRACE);
-            case '=': return JLexer_AdvanceCurrent(lexer, TOKEN_EQUALS);
-            case ';': return JLexer_AdvanceCurrent(lexer, TOKEN_SEMI);
+            case ':': return Lexer_AdvanceCurrent(lexer, TOKEN_COLON);
+            case '(': return Lexer_AdvanceCurrent(lexer, TOKEN_LPAREN);
+            case ')': return Lexer_AdvanceCurrent(lexer, TOKEN_RPAREN);
+            case '{': return Lexer_AdvanceCurrent(lexer, TOKEN_LBRACE);
+            case '}': return Lexer_AdvanceCurrent(lexer, TOKEN_RBRACE);
+            case '=': return Lexer_AdvanceCurrent(lexer, TOKEN_EQUALS);
+            case ';': return Lexer_AdvanceCurrent(lexer, TOKEN_SEMI);
             case '\0': break;
             default: 
-                printf("JLang [Lexer]: Unexpected character '%c'\n", lexer->c);
+                printf("jlang [Lexer]: Unexpected character '%c'\n", lexer->c);
                 exit(1);
         }
     }
 
-    return JToken_Init(0, TOKEN_EOF);
+    return Token_Init(0, TOKEN_EOF);
 }
 

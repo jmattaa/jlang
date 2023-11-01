@@ -14,25 +14,25 @@ typedef struct
     size_t src_size;
     char c;
     unsigned int i;
-} JLexer;
+} Lexer;
 
 // create the JLexer obj
-JLexer *JLexer_Init(char *src);
+Lexer *Lexer_Init(char *src);
 
 // advance the lexer
-void JLexer_Advance(JLexer *lexer);
+void Lexer_Advance(Lexer *lexer);
 // skip all whitespace
-void JLexer_SkipWhitespace(JLexer *lexer);
+void Lexer_SkipWhitespace(Lexer *lexer);
 
 // parse id
-JToken *JLexer_ParseId(JLexer *lexer);
+Token *Lexer_ParseId(Lexer *lexer);
 // parse number
-JToken *JLexer_ParseNum(JLexer *lexer);
+Token *Lexer_ParseNum(Lexer *lexer);
 
 // return the current char and token and advance
-JToken *JLexer_AdvanceCurrent(JLexer *lexer, int type);
+Token *Lexer_AdvanceCurrent(Lexer *lexer, int type);
 
 // get the next token
-JToken *JLexer_NextToken(JLexer *lexer);
+Token *Lexer_NextToken(Lexer *lexer);
 
 #endif

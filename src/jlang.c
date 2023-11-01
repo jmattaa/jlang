@@ -3,10 +3,10 @@
 
 void Jlang_Compile(char *src)
 {
-    JLexer *lexer = JLexer_Init(src);
-    JToken *tok = 0;
+    Lexer *lexer = Lexer_Init(src);
+    Token *tok = 0;
 
-    while ((tok = JLexer_NextToken(lexer))->type != TOKEN_EOF)
+    while ((tok = Lexer_NextToken(lexer))->type != TOKEN_EOF)
     {
         printf("TOK: <val: '%s', type %d>\n", tok->value, tok->type);
     }
