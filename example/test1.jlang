@@ -1,4 +1,4 @@
-func main:int() {
+main:int() {
     return:int = 1;
 }
 
