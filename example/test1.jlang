@@ -1,4 +1,4 @@
-main:int() {
+main:int = (argc:int, argv:str) {
     return:int = 1;
-}
+};
 

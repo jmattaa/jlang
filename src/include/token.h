@@ -12,6 +12,7 @@ typedef struct
         TOKEN_ID,
         TOKEN_INT,
         TOKEN_COLON,
+        TOKEN_COMMA,
         TOKEN_LPAREN,
         TOKEN_RPAREN,
         TOKEN_LBRACE,
@@ -24,5 +25,7 @@ typedef struct
 
 // create the token obj
 Token *Token_Init(char *value, int type);
+
+char *Tok_to_str(Token* tok);
 
 #endif

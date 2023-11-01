@@ -1,6 +1,9 @@
 #ifndef JLANG_H
 #define JLANG_H
 
+#include "lexer.h"
+#include "parser.h"
+
 // compile the src 
 void Jlang_Compile(char *src);
 

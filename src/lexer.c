@@ -83,6 +83,7 @@ Token *Lexer_NextToken(Lexer *lexer)
         switch (lexer->c)
         {
             case ':': return Lexer_AdvanceCurrent(lexer, TOKEN_COLON);
+            case ',': return Lexer_AdvanceCurrent(lexer, TOKEN_COMMA);
             case '(': return Lexer_AdvanceCurrent(lexer, TOKEN_LPAREN);
             case ')': return Lexer_AdvanceCurrent(lexer, TOKEN_RPAREN);
             case '{': return Lexer_AdvanceCurrent(lexer, TOKEN_LBRACE);
