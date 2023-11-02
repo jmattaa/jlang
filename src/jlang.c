@@ -1,4 +1,5 @@
 #include "include/jlang.h"
+#include "include/asm_frontend.h"
 
 void Jlang_Compile(char *src)
 {
@@ -7,5 +8,7 @@ void Jlang_Compile(char *src)
 
     AST *root = Parser_Parse(parser);
 
-    printf("%d\n", root->children->size);
+    char *as = ASMFrontend(root);
+
+    printf("%s\n", as);
 }

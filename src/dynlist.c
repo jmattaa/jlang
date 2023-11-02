@@ -20,5 +20,5 @@ void Dynlist_Append(dynlist *list, void *item)
     else
         list->items = realloc(list->items, list->item_size * list->size);
 
-    list->items[list->size] = item;
+    list->items[list->size - 1] = item;
 }

@@ -11,7 +11,6 @@ typedef struct AST_STRUCT
         AST_COMPOUND,
         AST_FUNCTION,
         AST_ASSIGNMENT,
-        AST_DEF_TYPE,
         AST_VARIABLE,
         AST_STATEMENT,
         AST_INT,
