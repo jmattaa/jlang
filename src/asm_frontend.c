@@ -20,8 +20,8 @@ char *ASMFrontend_Assignment(AST *ast)
     {
         // first 2 %s is function name
         // %s after is body in asm
-        char *template = ".global %s\n"
-                         "_%s:\n%s\n";
+        char *template = ".globl %s\n"
+                         "%s:\n%s\n";
 
         char *funcbody = ASMFrontend(ast->value->value);
         char *val = calloc(

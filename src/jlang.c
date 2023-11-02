@@ -8,9 +8,9 @@ void Jlang_Compile(char *src)
 
     AST *root = Parser_Parse(parser);
 
-    const char *section_text = ".section text\n"
-                               ".global start\n"
-                               "start:\n"
+    const char *section_text = ".section .text\n"
+                               ".globl _start\n"
+                               "_start:\n"
                                "call main\n"
                                "mov %eax, %ebx\n"
                                "mov $1, %eax\n"
