@@ -9,7 +9,7 @@ typedef struct AST_STRUCT
     enum
     {
         AST_COMPOUND,
-        AST_FUNCTION,
+        AST_FUNCTION_BODY,
         AST_ASSIGNMENT,
         AST_VARIABLE,
         AST_STATEMENT,

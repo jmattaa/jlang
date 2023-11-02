@@ -14,17 +14,41 @@ char *ASMFrontend_Compound(AST *ast)
     return val;
 }
 
-char *ASMFrontend_Assignment(AST *ast) {
-    char *test = "mov eax, 123";
-    char *val = (char *)calloc(strlen(test) + 1, sizeof(char));
-    strcpy(val, test);
-    
-    return val;
+char *ASMFrontend_Assignment(AST *ast)
+{
+    if (ast->value->type == AST_FUNCTION_BODY)
+    {
+        // first 2 %s is function name
+        // %s after is body in asm
+        char *template = ".global %s\n"
+                         "_%s:\n%s\n";
+
+        char *funcbody = ASMFrontend(ast->value->value);
+        char *val = calloc(
+            (strlen(template) + (strlen(ast->name) * 2) + strlen(funcbody) + 1),
+            sizeof(char));
+
+        // function body is pretty much a compound in value
+        sprintf(val, template, ast->name, ast->name, funcbody);
+
+        return val;
+    }
+    else if (strcmp(ast->name, "return") == 0)
+    {
+        char *template = "mov $%d, %%eax\n"
+                         "ret\n";
+        char *val = calloc(strlen(template) + sizeof(int), sizeof(char));
+
+        sprintf(val, template, ast->value->int_value);
+        return val;
+    }
+
+    return "";
 }
 
-char *ASMFrontent_Variable(AST *ast) {}
+char *ASMFrontent_Variable(AST *ast) { return ""; }
 
-char *ASMFrontend_Int(AST *ast) {}
+char *ASMFrontend_Int(AST *ast) { return ""; }
 
 char *ASMFrontend(AST *ast)
 {

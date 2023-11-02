@@ -98,7 +98,8 @@ AST *Parser_ParseList(Parser *parser)
     // function definition
     if (parser->token->type == TOKEN_LBRACE)
     {
-        ast->type = AST_FUNCTION;
+        // make ast know were a function not a variable
+        ast->type = AST_FUNCTION_BODY;
 
         // parse body
         ast->value = Parser_ParseBlock(parser);

@@ -8,7 +8,20 @@ void Jlang_Compile(char *src)
 
     AST *root = Parser_Parse(parser);
 
-    char *as = ASMFrontend(root);
+    const char *section_text = ".section text\n"
+                               ".global start\n"
+                               "start:\n"
+                               "call main\n"
+                               "mov %eax, %ebx\n"
+                               "mov $1, %eax\n"
+                               "int $0x80\n";
+
+    char *as = calloc(strlen(section_text) + 1, sizeof(char));
+    strcpy(as, section_text);
+
+    char *asmVal = ASMFrontend(root);
+    as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
+    strcat(as, asmVal);
 
     printf("%s\n", as);
 }
