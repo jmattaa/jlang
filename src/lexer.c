@@ -108,3 +108,10 @@ Token *Lexer_NextToken(Lexer *lexer)
 
     return Token_Init(0, TOKEN_EOF);
 }
+
+void Lexer_FreeLexer(Lexer *lexer)
+{
+    if (lexer->src)
+        free(lexer->src);
+    free(lexer);
+}

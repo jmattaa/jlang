@@ -52,3 +52,11 @@ char *Tok_to_str(Token *token)
 
     return str;
 }
+
+void Token_FreeToken(Token *token)
+{
+    if (token->value)
+        free(token->value);
+
+    free(token);
+}

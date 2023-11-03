@@ -35,4 +35,6 @@ Token *Lexer_AdvanceCurrent(Lexer *lexer, int type);
 // get the next token
 Token *Lexer_NextToken(Lexer *lexer);
 
+void Lexer_FreeLexer(Lexer *lexer);
+
 #endif

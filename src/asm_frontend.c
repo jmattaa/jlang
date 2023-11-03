@@ -7,8 +7,11 @@ char *ASMFrontend_Compound(AST *ast)
     {
         AST *child_ast = (AST *)ast->children->items[i];
         char *next_val = ASMFrontend(child_ast);
+
         val = realloc(val, (strlen(next_val) + 1) * sizeof(char));
         strcat(val, next_val);
+
+        free(next_val);
     }
 
     return val;
@@ -31,6 +34,7 @@ char *ASMFrontend_Assignment(AST *ast)
         // function body is pretty much a compound in value
         sprintf(val, template, ast->name, ast->name, funcbody);
 
+        free(funcbody);
         return val;
     }
     else if (strcmp(ast->name, "return") == 0)
@@ -78,5 +82,6 @@ char *ASMFrontend(AST *ast)
     val = realloc(val, (strlen(next_val) + 1) * sizeof(char));
     strcat(val, next_val);
 
+    free(next_val);
     return val;
 }

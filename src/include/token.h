@@ -28,4 +28,6 @@ Token *Token_Init(char *value, int type);
 
 char *Tok_to_str(Token* tok);
 
+void Token_FreeToken(Token *token);
+
 #endif

@@ -27,5 +27,7 @@ AST *Parser_ParseExpr(Parser *parser);
 // parse compound
 AST *Parser_ParseCompound(Parser *parser);
 
+void Parser_FreeParser(Parser *parser);
+
 #endif
 

@@ -1,4 +1,5 @@
 #include "include/parser.h"
+#include "include/lexer.h"
 #include "include/token.h"
 
 Parser *Parser_Init(Lexer *lexer)
@@ -19,6 +20,9 @@ Token *Parser_Eat(Parser *parser, int type)
                Tok_to_str(parser->token), Tok_to_str(Token_Init("", type)));
         exit(1);
     }
+
+
+    Token_FreeToken(parser->token); // this line fixed 390 bytes of mem leak
 
     parser->token = Lexer_NextToken(parser->lexer);
     return parser->token;
@@ -147,4 +151,14 @@ AST *Parser_ParseCompound(Parser *parser)
     }
 
     return compound;
+}
+
+void Parser_FreeParser(Parser *parser)
+{
+    if (parser->lexer)
+        Lexer_FreeLexer(parser->lexer);
+    if (parser->token)
+        Token_FreeToken(parser->token);
+
+    free(parser);
 }

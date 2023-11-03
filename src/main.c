@@ -13,7 +13,5 @@ int main(int argc, char **argv)
     char *src = IO_ReadFile(argv[1]);
     Jlang_Compile(src);
 
-    free(src);
-
     return 0;
 }

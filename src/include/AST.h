@@ -31,4 +31,6 @@ typedef struct AST_STRUCT
 
 AST *AST_Init(int type);
 
+void AST_FreeAST(AST *ast);
+
 #endif

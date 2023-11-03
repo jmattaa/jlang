@@ -1,5 +1,4 @@
 #include "include/jlang.h"
-#include "include/asm_frontend.h"
 
 void Jlang_Compile(char *src)
 {
@@ -24,4 +23,9 @@ void Jlang_Compile(char *src)
     strcat(as, asmVal);
 
     printf("%s\n", as);
+
+    // prevent all of the memory leaks cuz we got warnings
+    // and warnings ain't good
+    Parser_FreeParser(parser);
+    free(asmVal);
 }
