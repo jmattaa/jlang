@@ -1,11 +1,12 @@
 #ifndef JLANG_H
 #define JLANG_H
 
+#include "IO.h"
+#include "asm_frontend.h"
 #include "lexer.h"
 #include "parser.h"
-#include "asm_frontend.h"
 
-// compile the src 
+// compile the src
 void Jlang_Compile(char *src);
 
 #endif

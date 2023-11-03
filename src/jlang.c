@@ -22,7 +22,7 @@ void Jlang_Compile(char *src)
     as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
     strcat(as, asmVal);
 
-    printf("%s\n", as);
+    IO_WriteFile("out.S", as);
 
     // prevent all of the memory leaks cuz we got warnings
     // and warnings ain't good
