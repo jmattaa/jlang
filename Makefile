@@ -22,7 +22,6 @@ mkdirs:
 	-mkdir -p $(build)
 	-mkdir -p $(obj)
 
-
 install: $(exec)
 	install -m 755 $(exec) $(INSTALL_DIR)
 

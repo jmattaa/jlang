@@ -1,4 +1,4 @@
 main:int = (argc:int, argv:str) {
-    return:int = 1;
+    return:int = 69;
 };
 
