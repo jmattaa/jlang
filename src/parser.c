@@ -1,6 +1,4 @@
 #include "include/parser.h"
-#include "include/lexer.h"
-#include "include/token.h"
 
 Parser *Parser_Init(Lexer *lexer)
 {
@@ -21,7 +19,6 @@ Token *Parser_Eat(Parser *parser, int type)
         exit(1);
     }
 
-
     Token_FreeToken(parser->token); // this line fixed 390 bytes of mem leak
 
     parser->token = Lexer_NextToken(parser->lexer);
@@ -37,30 +34,33 @@ AST *Parser_ParseId(Parser *parser)
 
     // expect name
     Parser_Eat(parser, TOKEN_ID);
-    Parser_Eat(parser, TOKEN_COLON);
-    // get the type of the variable
-    char *type = parser->token->value;
-
-    // expect the type
-    Parser_Eat(parser, TOKEN_ID);
-
-    // defining something
-    if (parser->token->type == TOKEN_EQUALS)
+    if (parser->token->type == TOKEN_COLON)
     {
-        // expect the equals
-        Parser_Eat(parser, TOKEN_EQUALS);
+        Parser_Eat(parser, TOKEN_COLON);
+        // get the type of the variable
+        char *type = parser->token->value;
 
-        AST *ast = AST_Init(AST_ASSIGNMENT);
+        // expect the type
+        Parser_Eat(parser, TOKEN_ID);
 
-        ast->name = val;
-        ast->variable_type = type;
+        // defining something
+        if (parser->token->type == TOKEN_EQUALS)
+        {
+            // expect the equals
+            Parser_Eat(parser, TOKEN_EQUALS);
 
-        ast->value = Parser_ParseExpr(parser);
+            AST *ast = AST_Init(AST_ASSIGNMENT);
 
-        // end all definitions with semicolon
-        Parser_Eat(parser, TOKEN_SEMI);
+            ast->name = val;
+            ast->variable_type = type;
 
-        return ast;
+            ast->value = Parser_ParseExpr(parser);
+
+            // end all definitions with semicolon
+            Parser_Eat(parser, TOKEN_SEMI);
+
+            return ast;
+        }
     }
 
     // calling or using variable

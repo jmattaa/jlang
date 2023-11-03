@@ -1,8 +1,14 @@
 #ifndef JLANG_AST_H
 #define JLANG_AST_H
 
-#include <stdlib.h>
 #include "dynlist.h"
+#include <stdlib.h>
+
+typedef struct
+{
+    dynlist *names;
+    dynlist *offsets;
+} variables_list;
 
 typedef struct AST_STRUCT
 {
@@ -16,7 +22,7 @@ typedef struct AST_STRUCT
         AST_INT,
         AST_NOOP,
     } type;
-    
+
     dynlist *children; // only exist if its a AST_Compound
 
     char *name;
@@ -25,12 +31,10 @@ typedef struct AST_STRUCT
     // assignment specific stuff
     char *variable_type;
 
-    // int 
+    // int
     int int_value;
 } AST;
 
 AST *AST_Init(int type);
-
-void AST_FreeAST(AST *ast);
 
 #endif

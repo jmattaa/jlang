@@ -42,22 +42,42 @@ char *ASMFrontend_Assignment(AST *ast)
     }
     else if (strcmp(ast->name, "return") == 0)
     {
-        char *template = "movl $%d, %%eax\n" // return val in eax
+        char *template = "movl %s, %%eax\n"    // return val in eax
                          "movl %%ebp, %%esp\n" // reset args
-                         "popl %%ebp\n" // reset stack
+                         "popl %%ebp\n"        // reset stack
                          "ret\n";
-        char *val = calloc(strlen(template) + 128, sizeof(char)); // 128 to get length of int
+        char *val = calloc(strlen(template) + 128,
+                           sizeof(char)); // 128 to get length of int
 
-        sprintf(val, template, ast->value->int_value);
+        char *ret_val = ASMFrontend(ast->value);
+        sprintf(val, template, ret_val);
+
+        free(ret_val);
         return val;
     }
 
     return "";
 }
 
-char *ASMFrontent_Variable(AST *ast) { return ""; }
+char *ASMFrontent_Variable(AST *ast)
+{
+    char *template = "%d(%%esp)";
 
-char *ASMFrontend_Int(AST *ast) { return ""; }
+    char *val = calloc(strlen(template) + 8, sizeof(char));
+    sprintf(val, template, 8); // TODO: CALC VAR OFFSET FROM NAME ast->name
+
+    return val;
+}
+
+char *ASMFrontend_Int(AST *ast)
+{
+    char *template = "$%d";
+
+    char *val = calloc(strlen(template) + 256, sizeof(char));
+    sprintf(val, template, ast->int_value);
+
+    return val;
+}
 
 char *ASMFrontend(AST *ast)
 {
