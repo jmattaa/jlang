@@ -7,5 +7,6 @@
 #include <string.h>
 
 char *ASMFrontend(AST *ast);
+char *ASMFrontend_Root(AST *ast);
 
 #endif

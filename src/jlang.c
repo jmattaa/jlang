@@ -7,25 +7,12 @@ void Jlang_Compile(char *src, char *outfile)
 
     AST *root = Parser_Parse(parser);
 
-    const char *section_text = ".section .text\n"
-                               ".globl _start\n"
-                               "_start:\n"
-                               "call main\n"
-                               "mov %eax, %ebx\n"
-                               "mov $1, %eax\n"
-                               "int $0x80\n";
-
-    char *as = calloc(strlen(section_text) + 1, sizeof(char));
-    strcpy(as, section_text);
-
-    char *asmVal = ASMFrontend(root);
-    as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
-    strcat(as, asmVal);
+    char *as = ASMFrontend_Root(root);
 
     IO_WriteFile(strcat(outfile, ".S"), as);
 
     // prevent all of the memory leaks cuz we got warnings
     // and warnings ain't good
     Parser_FreeParser(parser);
-    free(asmVal);
+    free(as);
 }

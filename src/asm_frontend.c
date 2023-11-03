@@ -24,7 +24,10 @@ char *ASMFrontend_Assignment(AST *ast)
         // first 2 %s is function name
         // %s after is body in asm
         char *template = ".globl %s\n"
-                         "%s:\n%s\n";
+                         "%s:\n"
+                         "pushl %%ebp\n" // store ebp
+                         "movl %%esp, %%ebp\n"
+                         "%s\n";
 
         char *funcbody = ASMFrontend(ast->value->value);
         char *val = calloc(
@@ -39,9 +42,11 @@ char *ASMFrontend_Assignment(AST *ast)
     }
     else if (strcmp(ast->name, "return") == 0)
     {
-        char *template = "mov $%d, %%eax\n"
+        char *template = "movl $%d, %%eax\n" // return val in eax
+                         "movl %%ebp, %%esp\n" // reset args
+                         "popl %%ebp\n" // reset stack
                          "ret\n";
-        char *val = calloc(strlen(template) + sizeof(int), sizeof(char));
+        char *val = calloc(strlen(template) + 128, sizeof(char)); // 128 to get length of int
 
         sprintf(val, template, ast->value->int_value);
         return val;
@@ -84,4 +89,27 @@ char *ASMFrontend(AST *ast)
 
     free(next_val);
     return val;
+}
+
+char *ASMFrontend_Root(AST *ast)
+{
+    const char *section_text = ".section .text\n"
+                               ".globl _start\n"
+                               "_start:\n"
+                               "pushl 0(%esp)\n" // give args to main
+                               "call main\n"
+                               "addl $4, %esp\n" // reset ptr
+                               "movl %eax, %ebx\n"
+                               "movl $1, %eax\n"
+                               "int $0x80\n";
+
+    char *as = calloc(strlen(section_text) + 1, sizeof(char));
+    strcpy(as, section_text);
+
+    char *asmVal = ASMFrontend(ast);
+    as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
+    strcat(as, asmVal);
+
+    free(asmVal);
+    return as;
 }
