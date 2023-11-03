@@ -1,6 +1,6 @@
 #include "include/jlang.h"
 
-void Jlang_Compile(char *src)
+void Jlang_Compile(char *src, char *outfile)
 {
     Lexer *lexer = Lexer_Init(src);
     Parser *parser = Parser_Init(lexer);
@@ -22,7 +22,7 @@ void Jlang_Compile(char *src)
     as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
     strcat(as, asmVal);
 
-    IO_WriteFile("out.S", as);
+    IO_WriteFile(strcat(outfile, ".S"), as);
 
     // prevent all of the memory leaks cuz we got warnings
     // and warnings ain't good

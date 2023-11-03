@@ -7,6 +7,6 @@
 #include "parser.h"
 
 // compile the src
-void Jlang_Compile(char *src);
+void Jlang_Compile(char *src, char *outfile);
 
 #endif
