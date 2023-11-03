@@ -8,7 +8,7 @@ char *ASMFrontend_Compound(AST *ast)
         AST *child_ast = (AST *)ast->children->items[i];
         char *next_val = ASMFrontend(child_ast);
 
-        val = realloc(val, (strlen(next_val) + 1) * sizeof(char));
+        val = realloc(val, (strlen(next_val) + strlen(val) + 1) * sizeof(char));
         strcat(val, next_val);
 
         free(next_val);
@@ -46,8 +46,7 @@ char *ASMFrontend_Assignment(AST *ast)
                          "movl %%ebp, %%esp\n" // reset args
                          "popl %%ebp\n"        // reset stack
                          "ret\n";
-        char *val = calloc(strlen(template) + 128,
-                           sizeof(char)); // 128 to get length of int
+        char *val = calloc(strlen(template) + 256, sizeof(char));
 
         char *ret_val = ASMFrontend(ast->value);
         sprintf(val, template, ret_val);
@@ -56,7 +55,15 @@ char *ASMFrontend_Assignment(AST *ast)
         return val;
     }
 
-    return "";
+    // defining a normal variable not function
+    char *template = "movl %s, %%eax\n"
+                     "push %%eax\n";
+    char *var_val = ASMFrontend(ast->value);
+    char *val = calloc(strlen(template) + 256, sizeof(char));
+
+    sprintf(val, template, var_val);
+    free(var_val);
+    return val;
 }
 
 char *ASMFrontent_Variable(AST *ast)
@@ -127,7 +134,7 @@ char *ASMFrontend_Root(AST *ast)
     strcpy(as, section_text);
 
     char *asmVal = ASMFrontend(ast);
-    as = realloc(as, (strlen(as) + strlen(section_text) + 1) * sizeof(char));
+    as = realloc(as, (strlen(as) + strlen(asmVal) + 1) * sizeof(char));
     strcat(as, asmVal);
 
     free(asmVal);
