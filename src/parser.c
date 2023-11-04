@@ -88,9 +88,13 @@ AST *Parser_ParseBlock(Parser *parser)
 AST *Parser_ParseList(Parser *parser)
 {
     Parser_Eat(parser, TOKEN_LPAREN);
+    
     AST *ast = AST_Init(AST_COMPOUND);
-    Dynlist_Append(ast->children, Parser_ParseExpr(parser));
 
+    if (parser->token->type == TOKEN_RPAREN)
+        return ast;
+
+    Dynlist_Append(ast->children, Parser_ParseExpr(parser));
     while (parser->token->type == TOKEN_COMMA)
     {
         Parser_Eat(parser, TOKEN_COMMA);
