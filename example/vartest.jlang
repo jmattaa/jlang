@@ -1,0 +1,4 @@
+main:int = (argc:int, argv:str) {
+    testVar:int = 69;
+    return:int = testVar;
+};

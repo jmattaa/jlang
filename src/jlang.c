@@ -7,7 +7,7 @@ void Jlang_Compile(char *src, char *outfile)
 
     AST *root = Parser_Parse(parser);
 
-    char *as = ASMFrontend_Root(root);
+    char *as = ASMFrontend_Root(root, Dynlist_Init(sizeof(AST *)));
 
     IO_WriteFile(strcat(outfile, ".S"), as);
 

@@ -33,6 +33,9 @@ typedef struct AST_STRUCT
 
     // int
     int int_value;
+
+    // stack
+    int stack_index;
 } AST;
 
 AST *AST_Init(int type);
