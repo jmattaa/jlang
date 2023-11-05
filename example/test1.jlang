@@ -1,7 +1,6 @@
 main:int = () {
     four:int = 4;
-    ret:int = testing(1, 2, 3, four);;
-    return:int = ret;
+    return:int = testing(1, 2, 3, four);;
 };
 
 testing:int = (one:int, two:int, three:int, four:int) {

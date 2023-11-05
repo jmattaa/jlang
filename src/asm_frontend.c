@@ -111,6 +111,24 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
     }
     else if (strcmp(ast->name, "return") == 0)
     {
+        // defining variable with a value of a func
+        if (ast->value->type == AST_FUNCTION_CALL)
+        {
+            char *template = "%s\n" // the call statment
+                                    // return val is in eax already
+                             "movl %%ebp, %%esp\n" // reset args
+                             "popl %%ebp\n"        // reset stack
+                             "ret\n";
+            char *call_str = ASMFrontend(ast->value, varlist);
+            char *val =
+                calloc(strlen(template) + strlen(call_str) + 1, sizeof(char));
+
+            sprintf(val, template, call_str);
+
+            free(call_str);
+            return val;
+        }
+
         char *template = "movl %s, %%eax\n"    // return val in eax
                          "movl %%ebp, %%esp\n" // reset args
                          "popl %%ebp\n"        // reset stack
