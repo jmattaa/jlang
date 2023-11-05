@@ -57,10 +57,12 @@ char *ASMFrontend_FunctionCall(AST *ast, dynlist *varlist)
         }
     }
 
-    char *call_str_template = "call %s\n";
-    char *call_str =
-        calloc(strlen(call_str_template) + strlen(ast->name) + 1, sizeof(char));
-    sprintf(call_str, call_str_template, ast->name);
+    char *call_str_template = "call %s\n"
+                              "addl $%d, %%esp"; // reset ptr
+    char *call_str = calloc(
+        strlen(call_str_template) + strlen(ast->name) + 8 + 1, sizeof(char));
+    sprintf(call_str, call_str_template, ast->name,
+            ast->value->children->size * 4);
 
     val = realloc(val, (strlen(val) + strlen(call_str) + 1) * sizeof(char));
     val = strcat(val, call_str);
