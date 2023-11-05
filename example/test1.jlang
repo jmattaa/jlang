@@ -1,9 +1,9 @@
-main:int = () {
-    four:int = 4;
-    return:int = testing(1, 2, 3, four);;
+main:int = (argc:int, argv:str) {
+    n:int = 4;
+    return:int = f(1, 2, 3, n);;
 };
 
-testing:int = (one:int, two:int, three:int, four:int) {
+f:int = (one:int, two:int, three:int, four:int) {
     return:int = two;
 };
 

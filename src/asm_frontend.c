@@ -90,7 +90,8 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
 
             AST *arg_var = AST_Init(AST_VARIABLE);
             arg_var->name = func_arg->name;
-            arg_var->stack_index = (4 * ast->value->children->size) - (i * 4);
+            arg_var->stack_index =
+                ((4 * ast->value->children->size) - (i * 4)) + 4;
 
             Dynlist_Append(varlist, arg_var);
 
@@ -175,7 +176,9 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
                      "movl %s, %%eax\n"
                      "pushl %%eax\n";
     char *var_val = ASMFrontend(ast->value, varlist);
-    char *val = calloc(strlen(template) + strlen(var_val) + 1, sizeof(char));
+    char *val =
+        calloc(strlen(template) + strlen(var_val) + strlen(ast->name) + 1,
+               sizeof(char));
 
     sprintf(val, template, ast->name, var_val);
 
