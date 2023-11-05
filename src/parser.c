@@ -113,9 +113,11 @@ AST *Parser_ParseList(Parser *parser)
 
             // parse body
             ast->value = Parser_ParseBlock(parser);
+
+            return ast;
         }
 
-        return ast;
+        return NULL; // if we call with no args we no need for args
     }
 
     Dynlist_Append(ast->children, Parser_ParseExpr(parser));

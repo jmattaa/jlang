@@ -1,5 +1,10 @@
 main:int = () {
-    testing();
-    return:int = 69;
+    four:int = 4;
+    ret:int = testing(1, 2, 3, four);;
+    return:int = ret;
+};
+
+testing:int = (one:int, two:int, three:int, four:int) {
+    return:int = two;
 };
 

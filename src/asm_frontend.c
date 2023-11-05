@@ -32,6 +32,42 @@ char *ASMFrontend_Compound(AST *ast, dynlist *varlist)
 
     return val;
 }
+char *ASMFrontend_FunctionCall(AST *ast, dynlist *varlist)
+{
+    // we have args
+    char *val = calloc(1, sizeof(char));
+    if (ast->value)
+    {
+        for (int i = 0; i < ast->value->children->size; i++)
+        {
+            AST *arg = (AST *)ast->value->children->items[i];
+            char *arg_val = ASMFrontend(arg, varlist);
+            char *next_val_template = "pushl %s\n";
+
+            char *next_val = calloc(
+                strlen(arg_val) + strlen(next_val_template) + 1, sizeof(char));
+            sprintf(next_val, next_val_template, arg_val);
+
+            val = realloc(val,
+                          (strlen(next_val) + strlen(val) + 1) * sizeof(char));
+            strcat(val, next_val);
+
+            free(arg_val);
+            free(next_val);
+        }
+    }
+
+    char *call_str_template = "call %s\n";
+    char *call_str =
+        calloc(strlen(call_str_template) + strlen(ast->name) + 1, sizeof(char));
+    sprintf(call_str, call_str_template, ast->name);
+
+    val = realloc(val, (strlen(val) + strlen(call_str) + 1) * sizeof(char));
+    val = strcat(val, call_str);
+
+    free(call_str);
+    return val;
+}
 
 char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
 {
@@ -79,23 +115,15 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
                          "movl %%ebp, %%esp\n" // reset args
                          "popl %%ebp\n"        // reset stack
                          "ret\n";
-        char *val = calloc(strlen(template) + 256, sizeof(char));
-
         char *ret_val = ASMFrontend(ast->value, varlist);
+
+        char *val =
+            calloc(strlen(template) + strlen(ret_val) + 1, sizeof(char));
         sprintf(val, template, ret_val);
 
         free(ret_val);
         return val;
     }
-
-    // defining a normal variable not function
-    char *template = "# defining '%s'\n"
-                     "movl %s, %%eax\n"
-                     "pushl %%eax\n";
-    char *var_val = ASMFrontend(ast->value, varlist);
-    char *val = calloc(strlen(template) + 256, sizeof(char));
-
-    sprintf(val, template, ast->name, var_val);
 
     // save variable in varlist
     AST *var = AST_Init(AST_VARIABLE);
@@ -104,9 +132,34 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
         (int)(-1 * (((int)varlist->size * 4) - (4 * varlist->current_offset)));
 
     Dynlist_Append(varlist, var);
+    free(var);
+
+    // defining variable with a value of a func
+    if (ast->value->type == AST_FUNCTION_CALL)
+    {
+        char *template = "# defining '%s'\n"
+                         "%s\n"           // the call statment
+                         "pushl %%eax\n"; // return val is in eax already
+        char *call_str = ASMFrontend(ast->value, varlist);
+        char *val =
+            calloc(strlen(template) + strlen(call_str) + 1, sizeof(char));
+
+        sprintf(val, template, ast->name, call_str);
+
+        free(call_str);
+        return val;
+    }
+
+    // defining a normal variable not function
+    char *template = "# defining '%s'\n"
+                     "movl %s, %%eax\n"
+                     "pushl %%eax\n";
+    char *var_val = ASMFrontend(ast->value, varlist);
+    char *val = calloc(strlen(template) + strlen(var_val) + 1, sizeof(char));
+
+    sprintf(val, template, ast->name, var_val);
 
     free(var_val);
-    free(var);
     return val;
 }
 
@@ -150,6 +203,9 @@ char *ASMFrontend(AST *ast, dynlist *varlist)
         break;
     case AST_ASSIGNMENT:
         next_val = ASMFrontend_Assignment(ast, varlist);
+        break;
+    case AST_FUNCTION_CALL:
+        next_val = ASMFrontend_FunctionCall(ast, varlist);
         break;
     case AST_VARIABLE:
         next_val = ASMFrontent_Variable(ast, varlist);
