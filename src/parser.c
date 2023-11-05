@@ -67,6 +67,16 @@ AST *Parser_ParseId(Parser *parser)
     AST *ast = AST_Init(AST_VARIABLE);
     ast->name = val;
 
+    if (parser->token->type == TOKEN_LPAREN)
+    {
+        ast->type = AST_FUNCTION_CALL;
+        // get the args
+        ast->value = Parser_ParseExpr(parser);
+        
+        // we need semi after functin call
+        Parser_Eat(parser, TOKEN_SEMI);
+    }
+
     return ast;
 }
 
@@ -88,11 +98,25 @@ AST *Parser_ParseBlock(Parser *parser)
 AST *Parser_ParseList(Parser *parser)
 {
     Parser_Eat(parser, TOKEN_LPAREN);
-    
+
     AST *ast = AST_Init(AST_COMPOUND);
 
     if (parser->token->type == TOKEN_RPAREN)
+    {
+        Parser_Eat(parser, TOKEN_RPAREN);
+
+        // function definition
+        if (parser->token->type == TOKEN_LBRACE)
+        {
+            // make ast know were a function not a variable
+            ast->type = AST_FUNCTION_BODY;
+
+            // parse body
+            ast->value = Parser_ParseBlock(parser);
+        }
+
         return ast;
+    }
 
     Dynlist_Append(ast->children, Parser_ParseExpr(parser));
     while (parser->token->type == TOKEN_COMMA)

@@ -1,4 +1,5 @@
 main:int = () {
+    testing();
     return:int = 69;
 };
 

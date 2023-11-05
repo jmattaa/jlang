@@ -18,7 +18,7 @@ typedef struct AST_STRUCT
         AST_FUNCTION_BODY,
         AST_ASSIGNMENT,
         AST_VARIABLE,
-        AST_STATEMENT,
+        AST_FUNCTION_CALL,
         AST_INT,
         AST_NOOP,
     } type;
