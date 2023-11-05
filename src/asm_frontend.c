@@ -89,12 +89,13 @@ char *ASMFrontend_Assignment(AST *ast, dynlist *varlist)
     }
 
     // defining a normal variable not function
-    char *template = "movl %s, %%eax\n"
+    char *template = "# defining '%s'\n"
+                     "movl %s, %%eax\n"
                      "pushl %%eax\n";
     char *var_val = ASMFrontend(ast->value, varlist);
     char *val = calloc(strlen(template) + 256, sizeof(char));
 
-    sprintf(val, template, var_val);
+    sprintf(val, template, ast->name, var_val);
 
     // save variable in varlist
     AST *var = AST_Init(AST_VARIABLE);
