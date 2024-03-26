@@ -1,8 +1,8 @@
 bin/
 
-out
-out.*
-test
-test.*
+out*
+out*
+test*
+test*
 
 .quickmarks

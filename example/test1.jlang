@@ -1,9 +1,9 @@
 main:int = (argc:int, argv:str) {
-    n:int = 4;
+    n:int = 7;
     return:int = f(1, 2, 3, n);;
 };
 
 f:int = (one:int, two:int, three:int, four:int) {
-    return:int = two;
+    return:int = four;
 };
 
