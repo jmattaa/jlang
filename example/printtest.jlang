@@ -1,0 +1,4 @@
+main:int = (argc:int, argv:str) {
+    bprint(69);
+    return:int = 0;
+};

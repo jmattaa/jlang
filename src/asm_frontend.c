@@ -1,5 +1,19 @@
 #include "include/asm_frontend.h"
 
+#define JLANG_BUILTIN_FUNCS                                                    \
+    ".globl bprint\n"                                                          \
+    "bprint:\n"                                                                \
+    "pushl %ebp\n"                                                             \
+    "movl %esp, %ebp\n"                                                        \
+    "movl 8(%ebp), %ecx\n" /* ecx will be printed, store arg in ecx*/          \
+    "movl $1, %ebx\n"      /* file descriptor STDOUT (1) */                    \
+    "movl $4, %edx\n"      /* bytes to print */                                \
+    "movl $1, %eax\n"      /* syscall number for sys_write */                  \
+    "int $0x80\n"          /* call kernel */                                   \
+    "movl %ebp, %esp\n"                                                        \
+    "popl %ebp\n"                                                              \
+    "ret\n"
+
 AST *var_lookup(dynlist *varlist, const char *name)
 {
     for (int i = 0; i < (int)varlist->size; i++)
@@ -58,7 +72,7 @@ char *ASMFrontend_FunctionCall(AST *ast, dynlist *varlist)
     }
 
     char *call_str_template = "call %s\n"
-                              "addl $%d, %%esp"; // reset ptr
+                              "addl $%d, %%esp\n"; // reset ptr
     char *call_str = calloc(
         strlen(call_str_template) + strlen(ast->name) + 8 + 1, sizeof(char));
     sprintf(call_str, call_str_template, ast->name,
@@ -260,7 +274,7 @@ char *ASMFrontend_Root(AST *ast, dynlist *varlist)
                                "addl $4, %esp\n" // reset ptr
                                "movl %eax, %ebx\n"
                                "movl $1, %eax\n"
-                               "int $0x80\n";
+                               "int $0x80\n" JLANG_BUILTIN_FUNCS;
 
     char *as = calloc(strlen(section_text) + 1, sizeof(char));
     strcpy(as, section_text);
