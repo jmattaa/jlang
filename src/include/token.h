@@ -4,11 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct 
-{
-    char *value;
-    enum
-    {
+typedef struct {
+    char* value;
+    enum {
         TOKEN_ID,
         TOKEN_INT,
         TOKEN_COLON,
@@ -24,10 +22,10 @@ typedef struct
 } Token;
 
 // create the token obj
-Token *Token_Init(char *value, int type);
+Token* Token_Init(char* value, int type);
 
-char *Tok_to_str(Token* tok);
+char* Tok_to_str(Token* tok);
 
-void Token_FreeToken(Token *token);
+void Token_FreeToken(Token* token);
 
 #endif

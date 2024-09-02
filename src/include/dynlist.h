@@ -4,9 +4,8 @@
 #include <stdlib.h>
 
 // dynamic list
-typedef struct
-{
-    void **items;
+typedef struct {
+    void** items;
     size_t item_size;
     size_t size;
 
@@ -15,11 +14,10 @@ typedef struct
 } dynlist;
 
 // create the dynlist obj
-dynlist *Dynlist_Init(size_t item_size);
+dynlist* Dynlist_Init(size_t item_size);
 // push to list
-void Dynlist_Append(dynlist *list, void *item);
+void Dynlist_Append(dynlist* list, void* item);
 
-void Dynlist_Freelist(dynlist *list);
+void Dynlist_Freelist(dynlist* list);
 
 #endif
-

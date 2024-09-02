@@ -1,8 +1,8 @@
 #include "include/dynlist.h"
 
-dynlist *Dynlist_Init(size_t item_size)
+dynlist* Dynlist_Init(size_t item_size)
 {
-    dynlist *list = calloc(1, sizeof(dynlist));
+    dynlist* list = calloc(1, sizeof(dynlist));
 
     list->items = 0;
     list->item_size = item_size;
@@ -14,7 +14,7 @@ dynlist *Dynlist_Init(size_t item_size)
     return list;
 }
 
-void Dynlist_Append(dynlist *list, void *item)
+void Dynlist_Append(dynlist* list, void* item)
 {
     list->size += 1;
 
@@ -26,7 +26,7 @@ void Dynlist_Append(dynlist *list, void *item)
     list->items[list->size - 1] = item;
 }
 
-void Dynlist_Freelist(dynlist *list)
+void Dynlist_Freelist(dynlist* list)
 {
     if (list->items)
         free(list->items);

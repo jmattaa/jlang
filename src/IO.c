@@ -1,11 +1,10 @@
 #include "include/IO.h"
 
-char *IO_ReadFile(const char *filename)
+char* IO_ReadFile(const char* filename)
 {
-    FILE *file = fopen(filename, "r");
+    FILE* file = fopen(filename, "r");
 
-    if (file == NULL)
-    {
+    if (file == NULL) {
         printf("JLang [IO]: error opening %s\n", filename);
         exit(1);
     }
@@ -14,7 +13,7 @@ char *IO_ReadFile(const char *filename)
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char *file_contents = (char *)malloc(file_size + 1);
+    char* file_contents = (char*)malloc(file_size + 1);
 
     if (file_contents == NULL)
         perror("JLang [IO]: memory allocation error");
@@ -27,12 +26,11 @@ char *IO_ReadFile(const char *filename)
     return file_contents;
 }
 
-void IO_WriteFile(const char *filename, char *outBuffer)
+void IO_WriteFile(const char* filename, char* outBuffer)
 {
-    FILE *file = fopen(filename, "wb");
+    FILE* file = fopen(filename, "wb");
 
-    if (file == NULL)
-    {
+    if (file == NULL) {
         printf("JLang [IO]: error opening %s\n", filename);
         exit(1);
     }

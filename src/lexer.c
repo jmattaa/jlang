@@ -1,9 +1,9 @@
 #include "include/lexer.h"
 #include "include/token.h"
 
-Lexer *Lexer_Init(char *src)
+Lexer* Lexer_Init(char* src)
 {
-    Lexer *lexer = calloc(1, sizeof(Lexer));
+    Lexer* lexer = calloc(1, sizeof(Lexer));
 
     lexer->src = src;
     lexer->src_size = strlen(src);
@@ -13,65 +13,60 @@ Lexer *Lexer_Init(char *src)
     return lexer;
 }
 
-void Lexer_Advance(Lexer *lexer)
+void Lexer_Advance(Lexer* lexer)
 {
-    if (lexer->i < lexer->src_size && lexer->c != '\0')
-    {
+    if (lexer->i < lexer->src_size && lexer->c != '\0') {
         lexer->i += 1;
         lexer->c = lexer->src[lexer->i];
     }
 }
 
-void Lexer_SkipWhitespace(Lexer *lexer)
+void Lexer_SkipWhitespace(Lexer* lexer)
 {
-    while (lexer->c == '\r' || lexer->c == '\n' || lexer->c == ' ' ||
-           lexer->c == '\t')
+    while (lexer->c == '\r' || lexer->c == '\n' || lexer->c == ' ' || lexer->c == '\t')
         Lexer_Advance(lexer);
 }
 
-Token *Lexer_ParseId(Lexer *lexer)
+Token* Lexer_ParseId(Lexer* lexer)
 {
-    char *val = calloc(1, sizeof(char));
+    char* val = calloc(1, sizeof(char));
 
-    while (isalnum(lexer->c))
-    {
+    while (isalnum(lexer->c)) {
         val = realloc(val, (strlen(val) + 2) * sizeof(char));
-        strcat(val, (char[]){lexer->c, 0});
+        strcat(val, (char[]) { lexer->c, 0 });
 
         Lexer_Advance(lexer);
     }
     return Token_Init(val, TOKEN_ID);
 }
 
-Token *Lexer_ParseNum(Lexer *lexer)
+Token* Lexer_ParseNum(Lexer* lexer)
 {
-    char *val = calloc(1, sizeof(char));
+    char* val = calloc(1, sizeof(char));
 
-    while (isdigit(lexer->c))
-    {
+    while (isdigit(lexer->c)) {
         val = realloc(val, (strlen(val) + 2) * sizeof(char));
-        strcat(val, (char[]){lexer->c, 0});
+        strcat(val, (char[]) { lexer->c, 0 });
         Lexer_Advance(lexer);
     }
     return Token_Init(val, TOKEN_INT);
 }
 
-Token *Lexer_AdvanceCurrent(Lexer *lexer, int type)
+Token* Lexer_AdvanceCurrent(Lexer* lexer, int type)
 {
-    char *val = calloc(2, sizeof(char));
+    char* val = calloc(2, sizeof(char));
     val[0] = lexer->c;
     val[1] = '\0';
 
-    Token *tok = Token_Init(val, type);
+    Token* tok = Token_Init(val, type);
     Lexer_Advance(lexer);
 
     return tok;
 }
 
-Token *Lexer_NextToken(Lexer *lexer)
+Token* Lexer_NextToken(Lexer* lexer)
 {
-    while (lexer->c != '\0')
-    {
+    while (lexer->c != '\0') {
         Lexer_SkipWhitespace(lexer);
 
         if (isalpha(lexer->c))
@@ -80,8 +75,7 @@ Token *Lexer_NextToken(Lexer *lexer)
         if (isdigit(lexer->c))
             return Lexer_ParseNum(lexer);
 
-        switch (lexer->c)
-        {
+        switch (lexer->c) {
         case ':':
             return Lexer_AdvanceCurrent(lexer, TOKEN_COLON);
         case ',':
@@ -109,7 +103,7 @@ Token *Lexer_NextToken(Lexer *lexer)
     return Token_Init(0, TOKEN_EOF);
 }
 
-void Lexer_FreeLexer(Lexer *lexer)
+void Lexer_FreeLexer(Lexer* lexer)
 {
     if (lexer->src)
         free(lexer->src);

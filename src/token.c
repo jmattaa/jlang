@@ -1,9 +1,9 @@
 #include "include/token.h"
 #include <string.h>
 
-Token *Token_Init(char *value, int type)
+Token* Token_Init(char* value, int type)
 {
-    Token *t = calloc(1, sizeof(Token));
+    Token* t = calloc(1, sizeof(Token));
 
     t->value = value;
     t->type = type;
@@ -11,10 +11,9 @@ Token *Token_Init(char *value, int type)
     return t;
 }
 
-const char *token_type_to_str(int type)
+const char* token_type_to_str(int type)
 {
-    switch (type)
-    {
+    switch (type) {
     case TOKEN_ID:
         return "TOKEN_ID";
     case TOKEN_EQUALS:
@@ -42,18 +41,18 @@ const char *token_type_to_str(int type)
     return "not_stringable";
 }
 
-char *Tok_to_str(Token *token)
+char* Tok_to_str(Token* token)
 {
-    const char *type_str = token_type_to_str(token->type);
-    const char *template = "<type=`%s`, int_type=`%d`, value=`%s`>";
+    const char* type_str = token_type_to_str(token->type);
+    const char* template = "<type=`%s`, int_type=`%d`, value=`%s`>";
 
-    char *str = calloc(strlen(type_str) + strlen(template) + 8, sizeof(char));
+    char* str = calloc(strlen(type_str) + strlen(template) + 8, sizeof(char));
     sprintf(str, template, type_str, token->type, token->value);
 
     return str;
 }
 
-void Token_FreeToken(Token *token)
+void Token_FreeToken(Token* token)
 {
     if (token->value)
         free(token->value);

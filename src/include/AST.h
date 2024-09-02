@@ -4,16 +4,13 @@
 #include "dynlist.h"
 #include <stdlib.h>
 
-typedef struct
-{
-    dynlist *names;
-    dynlist *offsets;
+typedef struct {
+    dynlist* names;
+    dynlist* offsets;
 } variables_list;
 
-typedef struct AST_STRUCT
-{
-    enum
-    {
+typedef struct AST_STRUCT {
+    enum {
         AST_COMPOUND,
         AST_FUNCTION_BODY,
         AST_ASSIGNMENT,
@@ -23,13 +20,13 @@ typedef struct AST_STRUCT
         AST_NOOP,
     } type;
 
-    dynlist *children; // only exist if its a AST_Compound
+    dynlist* children; // only exist if its a AST_Compound
 
-    char *name;
-    struct AST_STRUCT *value;
+    char* name;
+    struct AST_STRUCT* value;
 
     // assignment specific stuff
-    char *variable_type;
+    char* variable_type;
 
     // int
     int int_value;
@@ -38,6 +35,6 @@ typedef struct AST_STRUCT
     int stack_index;
 } AST;
 
-AST *AST_Init(int type);
+AST* AST_Init(int type);
 
 #endif
