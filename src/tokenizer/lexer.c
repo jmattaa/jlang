@@ -1,5 +1,5 @@
-#include "include/lexer.h"
-#include "include/token.h"
+#include "tokenizer/lexer.h"
+#include "tokenizer/token.h"
 
 Lexer* Lexer_Init(char* src)
 {

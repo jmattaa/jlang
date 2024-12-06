@@ -1,7 +1,7 @@
 #ifndef JLANG_AST_H
 #define JLANG_AST_H
 
-#include "dynlist.h"
+#include "utils/dynlist.h"
 #include <stdlib.h>
 
 typedef struct {

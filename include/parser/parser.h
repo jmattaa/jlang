@@ -1,9 +1,9 @@
 #ifndef JLANG_PARSER_H
 #define JLANG_PARSER_H
 
-#include "AST.h"
-#include "lexer.h"
-#include "token.h"
+#include "parser/AST.h"
+#include "tokenizer/lexer.h"
+#include "tokenizer/token.h"
 #include <stdlib.h>
 
 typedef struct {

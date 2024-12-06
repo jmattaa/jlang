@@ -1,5 +1,5 @@
 main:int = (argc:int, argv:str) {
-    n:int = 7;
+    n:int = 69;
     return:int = f(1, 2, 3, n);;
 };
 

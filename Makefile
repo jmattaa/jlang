@@ -4,23 +4,20 @@ obj = $(build)/obj
 
 exec = $(build)/jlang
 
-source = $(shell find $(src) -name *.c)
+source = $(shell find $(src) -name "*.c")
 objects = $(patsubst $(src)/%.c, $(obj)/%.o, $(source))
 
 INSTALL_DIR = /usr/local/bin
 
-cflags = -g 
-lflags = -g -ggdb -fsanitize=address -lm 
+cflags = -g -Iinclude
+lflags = -g -ggdb -fsanitize=address -lm
 
 $(exec): $(objects)
 	gcc $(lflags) -o $@ $^
 
-$(obj)/%.o: $(src)/%.c mkdirs
+$(obj)/%.o: $(src)/%.c
+	@mkdir -p $(dir $@)
 	gcc -c $(cflags) -o $@ $<
-
-mkdirs:
-	-mkdir -p $(build)
-	-mkdir -p $(obj)
 
 install: $(exec)
 	install -m 755 $(exec) $(INSTALL_DIR)

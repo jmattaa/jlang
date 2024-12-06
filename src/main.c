@@ -1,5 +1,5 @@
-#include "include/IO.h"
-#include "include/jlang.h"
+#include "IO.h"
+#include "jlang.h"
 #include <stdio.h>
 
 int main(int argc, char** argv)

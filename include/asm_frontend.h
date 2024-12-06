@@ -1,7 +1,7 @@
 #ifndef JLANG_ASM_FRONTEND_H
 #define JLANG_ASM_FRONTEND_H
 
-#include "AST.h"
+#include "parser/AST.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-#include "include/AST.h"
+#include "parser/AST.h"
 
 AST* AST_Init(int type)
 {

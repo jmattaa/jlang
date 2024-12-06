@@ -1,4 +1,4 @@
-#include "include/dynlist.h"
+#include "utils/dynlist.h"
 
 dynlist* Dynlist_Init(size_t item_size)
 {

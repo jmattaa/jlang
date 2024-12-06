@@ -1,4 +1,4 @@
-#include "include/jlang.h"
+#include "jlang.h"
 
 void Jlang_Compile(char* src, char* outfile)
 {

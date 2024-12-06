@@ -1,4 +1,4 @@
-#include "include/parser.h"
+#include "parser/parser.h"
 
 Parser* Parser_Init(Lexer* lexer)
 {

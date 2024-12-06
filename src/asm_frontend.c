@@ -1,4 +1,4 @@
-#include "include/asm_frontend.h"
+#include "asm_frontend.h"
 
 #define JLANG_BUILTIN_FUNCS                                           \
     ".globl bprint\n"                                                 \

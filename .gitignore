@@ -4,3 +4,4 @@ out*
 test*
 
 .quickmarks
+compile_commands.json

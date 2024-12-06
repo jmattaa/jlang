@@ -1,4 +1,4 @@
-#include "include/token.h"
+#include "tokenizer/token.h"
 #include <string.h>
 
 Token* Token_Init(char* value, int type)
