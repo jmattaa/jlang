@@ -1,4 +1,5 @@
 bin/
+.cache/
 
 out*
 test*
