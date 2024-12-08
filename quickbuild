@@ -1,0 +1,37 @@
+# Quickbuild Dev v0.1.0
+# https://github.com/nordtechtiger/quickbuild
+
+cc = "gcc";
+
+exec = "bin/jlang";
+
+cflags = "-g -Iinclude";
+lflags = "-g -ggdb -fsanitize=address -lm";
+
+sources = "src/*.c";
+objects = sources: "src/*.c" -> "bin/obj/*.o";
+
+install_dir = "/usr/local/bin";
+
+"quickbuild" {
+    depends = "mkdirs", objects;
+    run = "[cc] [lflags] -o [exec] [objects]";
+}
+
+objects as obj {
+    depends = obj: "bin/obj/*.o" -> "src/*.c";
+    run = "[cc] -c [cflags] -o [obj] [depends]";
+}
+
+"mkdirs" {
+    run = "mkdir -p bin bin/obj";
+}
+
+"install" {
+    depends = "quickbuild";
+    run = "install -m 755 [exec] [install_dir]";
+}
+
+"clean" {
+    run = "rm -rf bin";
+}
