@@ -1,6 +1,0 @@
-main:int = (argc:int, argv:str) {
-    testing:int = argc;
-    abc:int = testing;
-    retval:int = abc;
-    return:int = retval;
-};

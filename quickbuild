@@ -1,37 +1,74 @@
-# Quickbuild Dev v0.1.0
-# https://github.com/nordtechtiger/quickbuild
-
 cc = "gcc";
 
-exec = "bin/jlang";
+cflags = "-Iinclude";
+cflagsdev = "-g -Wall -Wextra -fsanitize=address [cflags]";
+cflagsrel = "-O3 [cflags]";
 
-cflags = "-g -Iinclude";
-lflags = "-g -ggdb -fsanitize=address -lm";
+lflags = "";
+lflagsdev = "-g -fsanitize=address [lflags]";
+lflagsrel = "-O3 [lflags]";
 
-sources = "src/*.c";
-objects = sources: "src/*.c" -> "bin/obj/*.o";
+srcs = "src/*.c";
+devobjs = srcs: "src/*.c" -> "build/dev/*.o";
+relobjs = srcs: "src/*.c" -> "build/rel/*.o";
 
-install_dir = "/usr/local/bin";
+headers = "include/*.h";
 
-"quickbuild" {
-    depends = "mkdirs", objects;
-    run = "[cc] [lflags] -o [exec] [objects]";
+dev_exec = "jlang";
+rel_exec = "build/rel/jlang";
+
+"dev" {
+    depends = "mkdirs", "build_devobjs";
+    run = "[cc] [lflagsdev] -o [dev_exec] [devobjs]";
 }
 
-objects as obj {
-    depends = obj: "bin/obj/*.o" -> "src/*.c";
-    run = "[cc] -c [cflags] -o [obj] [depends]";
+"run" {
+    depends = "dev";
+    run = "./[dev_exec]";
+}
+
+"build_devobjs" {
+    depends = "srcs", "headers", devobjs;
+    depends_parallel = true;
+}
+
+"rel" {
+    depends = "mkdirs", "build_relobjs";
+    run = "[cc] [lflagsrel] -o [rel_exec] [relobjs]";
+}
+
+"build_relobjs" {
+    depends = "srcs", "headers", relobjs;
+    depends_parallel = true;
+}
+
+
+devobjs as obj {
+    obj_src = obj: "build/dev/*.o" -> "src/*.c";
+    run = "[cc] [cflagsdev] -c [obj_src] -o [obj]";
+}
+
+relobjs as obj {
+    obj_src = obj: "build/rel/*.o" -> "src/*.c";
+    run = "[cc] [cflagsrel] -c [obj_src] -o [obj]";
+}
+
+# utility tasks
+
+"install" {
+    depends = "rel";
+    run = "sudo install -m 755 [rel_exec] /usr/local/bin/servc";
+}
+
+"uninstall" {
+    run = "sudo rm /usr/local/bin/servc";
 }
 
 "mkdirs" {
-    run = "mkdir -p bin bin/obj";
-}
-
-"install" {
-    depends = "quickbuild";
-    run = "install -m 755 [exec] [install_dir]";
+    run = "mkdir -p build/dev build/rel";
 }
 
 "clean" {
-    run = "rm -rf bin";
+    run = "rm -rf build",
+        "rm -rf [dev_exec]";
 }
