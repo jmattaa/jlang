@@ -23,11 +23,12 @@ typedef enum
 typedef struct
 {
     jlang_tokenType t;
-    const char *val;
+    char *val;
     pos_t pos;
 } jlang_token;
 
-jlang_token *jlang_tokenInit(jlang_tokenType t, const char *val, pos_t pos);
+jlang_token *jlang_tokenInit(jlang_tokenType t, char *val, pos_t pos);
+void jlang_tokenPrint(jlang_token *token);
 void jlang_tokenFree(jlang_token *token);
 
 #endif
