@@ -72,3 +72,13 @@ relobjs as obj {
     run = "rm -rf build",
         "rm -rf [dev_exec]";
 }
+
+# for gen_complcomds.py
+
+"echocfiles" {
+    run = "echo [srcs]";
+}
+
+"echocompileflags" {
+    run = "echo [cc] [cflagsdev] -c";
+}

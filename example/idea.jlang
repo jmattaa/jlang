@@ -16,10 +16,10 @@ main: ()int
         value: int = if (str != null)
             42; // all expressions must end with a semicolon
         else
-            0;
+            0; // this will return to the value
         ;
         print(value);
-        return value;
+        return value; // this will return from the main function
     ; // every statement must end with a semicolon
 
     return 0;
