@@ -14,7 +14,7 @@ typedef struct
     char c;
 } jlang_lexer;
 
-extern jlang_lexer lexer;
+extern jlang_lexer LEXER;
 
 void jlang_lexerInit(const char *src);
 jlang_token *jlang_lexerNext();

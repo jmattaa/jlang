@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #define JLANG_AST_TYPES_ITER(_X)                                               \
-    _X(AST_BLOCK)                                                              \
+    _X(AST_COMPOUND)                                                              \
     _X(AST_FUNCTION_DECL)                                                      \
     _X(AST_ASSIGNMENT)                                                         \
     _X(AST_LITERAL)
@@ -25,7 +25,7 @@ typedef struct ast
         {
             struct ast **children;
             size_t nchildren;
-        } block;
+        } compound;
 
         struct
         {

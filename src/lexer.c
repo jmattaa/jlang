@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-jlang_lexer lexer;
+jlang_lexer LEXER;
 
 // ------------------------ helper function decl ------------------------------
 static void lexer_advance();
@@ -18,24 +18,24 @@ static jlang_token *lexer_parse_num();
 
 void jlang_lexerInit(const char *src)
 {
-    lexer.src = src;
-    lexer.src_len = strlen(src);
-    lexer.pos = (pos_t){1, 1, 0};
-    lexer.c = lexer.src[lexer.pos.srcidx];
+    LEXER.src = src;
+    LEXER.src_len = strlen(src);
+    LEXER.pos = (pos_t){1, 1, 0};
+    LEXER.c = LEXER.src[LEXER.pos.srcidx];
 }
 
 jlang_token *jlang_lexerNext()
 {
-    while (lexer.c != '\0')
+    while (LEXER.c != '\0')
     {
         lexer_skip_ws();
 
-        if (isalpha(lexer.c)) // first char in id must be alphabetic
+        if (isalpha(LEXER.c)) // first char in id must be alphabetic
             return lexer_parse_id();
-        if (isdigit(lexer.c))
+        if (isdigit(LEXER.c))
             return lexer_parse_num();
 
-        switch (lexer.c)
+        switch (LEXER.c)
         {
         case '=':
             return lexer_advance_with_token(TOKEN_EQUALS);
@@ -52,35 +52,35 @@ jlang_token *jlang_lexerNext()
         default:
             fprintf(stderr,
                     "jlang [ERROR] unknown char: '%c' at line %zu col %zu\n",
-                    lexer.c, lexer.pos.line, lexer.pos.col); // TODO: logging
+                    LEXER.c, LEXER.pos.line, LEXER.pos.col); // TODO: logging
             exit(1);
         }
     }
 
-    return jlang_tokenInit(TOKEN_EOF, "", lexer.pos);
+    return jlang_tokenInit(TOKEN_EOF, "", LEXER.pos);
 }
 
 // -------------------------- helper function impl ----------------------------
 static void lexer_advance()
 {
-    if (lexer.pos.srcidx >= lexer.src_len || lexer.c == '\0')
+    if (LEXER.pos.srcidx >= LEXER.src_len || LEXER.c == '\0')
         return;
 
-    if (lexer.c == '\n')
+    if (LEXER.c == '\n')
     {
-        lexer.pos.line++;
-        lexer.pos.col = 1;
+        LEXER.pos.line++;
+        LEXER.pos.col = 1;
     }
     else
-        lexer.pos.col++;
+        LEXER.pos.col++;
 
-    lexer.pos.srcidx++;
-    lexer.c = lexer.src[lexer.pos.srcidx];
+    LEXER.pos.srcidx++;
+    LEXER.c = LEXER.src[LEXER.pos.srcidx];
 }
 
 static void lexer_skip_ws()
 {
-    while (lexer.c == ' ' || lexer.c == '\t' || lexer.c == '\n')
+    while (LEXER.c == ' ' || LEXER.c == '\t' || LEXER.c == '\n')
         lexer_advance();
 }
 
@@ -93,19 +93,19 @@ static jlang_token *lexer_advance_with_token(jlang_tokenType t)
         exit(1);
     }
 
-    val[0] = lexer.c;
+    val[0] = LEXER.c;
     val[1] = '\0';
 
     lexer_advance();
-    return jlang_tokenInit(t, val, lexer.pos);
+    return jlang_tokenInit(t, val, LEXER.pos);
 }
 
 static jlang_token *lexer_parse_id()
 {
-    size_t startidx = lexer.pos.srcidx;
-    while (isalnum(lexer.c))
+    size_t startidx = LEXER.pos.srcidx;
+    while (isalnum(LEXER.c))
         lexer_advance();
-    size_t len = lexer.pos.srcidx - startidx;
+    size_t len = LEXER.pos.srcidx - startidx;
 
     char *val = calloc(len + 1, sizeof(char));
     if (val == NULL)
@@ -114,18 +114,18 @@ static jlang_token *lexer_parse_id()
         exit(1);
     }
 
-    memcpy(val, lexer.src + startidx, len);
+    memcpy(val, LEXER.src + startidx, len);
     val[len] = '\0';
 
-    return jlang_tokenInit(TOKEN_ID, val, lexer.pos);
+    return jlang_tokenInit(TOKEN_ID, val, LEXER.pos);
 }
 
 static jlang_token *lexer_parse_num()
 {
-    size_t startidx = lexer.pos.srcidx;
-    while (isdigit(lexer.c))
+    size_t startidx = LEXER.pos.srcidx;
+    while (isdigit(LEXER.c))
         lexer_advance();
-    size_t len = lexer.pos.srcidx - startidx;
+    size_t len = LEXER.pos.srcidx - startidx;
 
     char *val = calloc(len + 1, sizeof(char));
     if (val == NULL)
@@ -134,9 +134,9 @@ static jlang_token *lexer_parse_num()
         exit(1);
     }
 
-    memcpy(val, lexer.src + startidx, len);
+    memcpy(val, LEXER.src + startidx, len);
     val[len] = '\0';
 
-    return jlang_tokenInit(TOKEN_NUMBER, val, lexer.pos);
+    return jlang_tokenInit(TOKEN_NUMBER, val, LEXER.pos);
 }
 // ---------------------------------------------------------------------------
