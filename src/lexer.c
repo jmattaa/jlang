@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "lexutils.h"
+#include "logger.h"
 #include "token.h"
 #include <ctype.h>
 #include <stdio.h>
@@ -50,10 +51,9 @@ jlang_token *jlang_lexerNext()
         case '\0':
             break;
         default:
-            fprintf(stderr,
-                    "jlang [ERROR] unknown char: '%c' at line %zu col %zu\n",
-                    LEXER.c, LEXER.pos.line, LEXER.pos.col); // TODO: logging
-            exit(1);
+            jlang_logFatal(1, "unkown char: '%c' at line %zu col %zu\n",
+                           LEXER.c, LEXER.pos.line, LEXER.pos.col);
+            break;
         }
     }
 
@@ -88,10 +88,7 @@ static jlang_token *lexer_advance_with_token(jlang_tokenType t)
 {
     char *val = calloc(2, sizeof(char));
     if (val == NULL)
-    {
-        fprintf(stderr, "jlang [ERROR] out of memory\n");
-        exit(1);
-    }
+        jlang_logFatal(1, "out of memory, calloc failed\n");
 
     val[0] = LEXER.c;
     val[1] = '\0';
@@ -109,10 +106,7 @@ static jlang_token *lexer_parse_id()
 
     char *val = calloc(len + 1, sizeof(char));
     if (val == NULL)
-    {
-        fprintf(stderr, "jlang [ERROR] out of memory\n");
-        exit(1);
-    }
+        jlang_logFatal(1, "out of memory, calloc failed\n");
 
     memcpy(val, LEXER.src + startidx, len);
     val[len] = '\0';
@@ -129,10 +123,7 @@ static jlang_token *lexer_parse_num()
 
     char *val = calloc(len + 1, sizeof(char));
     if (val == NULL)
-    {
-        fprintf(stderr, "jlang [ERROR] out of memory\n");
-        exit(1);
-    }
+        jlang_logFatal(1, "out of memory, calloc failed\n");
 
     memcpy(val, LEXER.src + startidx, len);
     val[len] = '\0';

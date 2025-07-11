@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "lexer.h"
+#include "logger.h"
 #include "token.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,10 +32,7 @@ static jlang_ast *parse_compound()
 {
     jlang_ast *cmpd = malloc(sizeof(jlang_ast));
     if (cmpd == NULL)
-    {
-        fprintf(stderr, "jlang [ERROR] out of memory\n");
-        exit(1);
-    }
+        jlang_logFatal(1, "out of memory, malloc failed\n");
     cmpd->t = AST_COMPOUND;
     cmpd->compound.children = NULL;
     cmpd->compound.nchildren = 0;
@@ -47,10 +45,7 @@ static jlang_ast *parse_compound()
         {
             cmpd->compound.children = malloc(sizeof(jlang_ast *));
             if (cmpd->compound.children == NULL)
-            {
-                fprintf(stderr, "jlang [ERROR] out of memory\n");
-                exit(1);
-            }
+                jlang_logFatal(1, "out of memory, malloc failed\n");
         }
         else
         {
@@ -58,10 +53,7 @@ static jlang_ast *parse_compound()
                 realloc(cmpd->compound.children,
                         sizeof(jlang_ast *) * cmpd->compound.nchildren);
             if (cmpd->compound.children == NULL)
-            {
-                fprintf(stderr, "jlang [ERROR] out of memory\n");
-                exit(1);
-            }
+                jlang_logFatal(1, "out of memory, realloc failed\n");
         }
 
         cmpd->compound.children[cmpd->compound.nchildren - 1] = parse_expr(tok);
@@ -77,20 +69,18 @@ static jlang_ast *parse_expr(jlang_token *tok)
     switch (tok->t)
     {
     case TOKEN_ID:
-        printf("id\n");
+        jlang_logInfo("id: %s\n", tok->val);
         return NULL; // parse identifier
     case TOKEN_LPAREN:
-        printf("lparen\n");
+        jlang_logInfo("lparen\n");
         return NULL; // parse list
     case TOKEN_NUMBER:
-        printf("number\n");
+        jlang_logInfo("number: %s\n", tok->val);
         return NULL; // parse number
     default:
-        printf("something else\n");
+        jlang_logInfo("something else\n");
         return NULL;
-        // fprintf(stderr, "jlang [ERROR] unknown: ");
-        // jlang_tokenPrint(tok);
-        // exit(1);
+        // jlang_logFatal(1, "jlang [ERROR] unexpected token");
     }
 }
 // ----------------------------------------------------------------------------

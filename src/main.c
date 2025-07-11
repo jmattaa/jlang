@@ -1,6 +1,7 @@
 #include "ast.h"
 #include "io.h"
 #include "lexer.h"
+#include "logger.h"
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,10 +9,7 @@
 int main(int argc, char **argv)
 {
     if (argc < 2)
-    {
-        fprintf(stderr, "jlang [ERROR] no input file\n");
-        return 1;
-    }
+        jlang_logFatal(1, "no input file!\n");
 
     char *src = jlang_readFile(argv[1]);
     if (src == NULL)
