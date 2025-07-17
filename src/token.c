@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define X(name) #name,
-static const char *token_names[] = {JLANG_TOKEN_TYPES_ITER(X)};
+const char *jlang_tokenNames[] = {JLANG_TOKEN_TYPES_ITER(X)};
 #undef X
 
 jlang_token *jlang_tokenInit(jlang_tokenType t, char *val, pos_t pos)
@@ -22,7 +22,7 @@ jlang_token *jlang_tokenInit(jlang_tokenType t, char *val, pos_t pos)
 void jlang_tokenPrint(jlang_token *token)
 {
     jlang_logInfo("token { type: %s, value: \"%s\", line: %zu, col: %zu }\n",
-                  token_names[token->t], token->val, token->pos.line,
+                  jlang_tokenNames[token->t], token->val, token->pos.line,
                   token->pos.col);
 }
 

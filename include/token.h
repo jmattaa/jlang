@@ -31,4 +31,6 @@ jlang_token *jlang_tokenInit(jlang_tokenType t, char *val, pos_t pos);
 void jlang_tokenPrint(jlang_token *token);
 void jlang_tokenFree(jlang_token *token);
 
+extern const char *jlang_tokenNames[];
+
 #endif
