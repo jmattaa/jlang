@@ -1,7 +1,7 @@
 cc = "gcc";
 
 cflags = "-Iinclude";
-cflagsdev = "-g -Wall -Wextra -fsanitize=address [cflags]";
+cflagsdev = "-g -Wall -Wextra -fsanitize=address -DJL_DEBUG [cflags]";
 cflagsrel = "-O3 [cflags]";
 
 lflags = "";

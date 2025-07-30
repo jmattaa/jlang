@@ -8,15 +8,19 @@
 #include <string.h>
 
 // ------------------------ helper function decl ------------------------------
-static jlang_ast *parse_compound();
-static jlang_ast *parse_expr(jlang_token *tok);
+static jlang_ast *parse_compound(jlang_token **tok);
+static jlang_ast *parse_expr(jlang_token **tok);
 static jlang_token *parser_eaa(jlang_token *tok,
                                jlang_tokenType t); // expect and advance
-static jlang_ast *parse_id(jlang_token *tok);
+static jlang_ast *parse_id(jlang_token **tok);
 // ----------------------------------------------------------------------------
 
 // the program is a compound
-jlang_ast *jlang_parse() { return parse_compound(); }
+jlang_ast *jlang_parse()
+{
+    jlang_token *tok = jlang_lexerNext();
+    return parse_compound(&tok);
+}
 
 void jlang_freeAst(jlang_ast *ast)
 {
@@ -46,9 +50,11 @@ void jlang_freeAst(jlang_ast *ast)
             if (ast->assignment.value)
                 jlang_freeAst(ast->assignment.value);
             break;
-        case AST_LITERAL:
-            if (ast->literal.val)
-                free(ast->literal.val);
+        case AST_LITERAL_STR:
+            if (ast->literalstr.val)
+                free(ast->literalstr.val);
+            break;
+        case AST_LITERAL_INT:
             break;
         }
         free(ast);
@@ -56,93 +62,90 @@ void jlang_freeAst(jlang_ast *ast)
 }
 
 // ---------------------------- helper function impl --------------------------
-static jlang_ast *parse_compound()
+static jlang_ast *parse_compound(jlang_token **tok)
 {
     jlang_ast *cmpd = malloc(sizeof(jlang_ast));
     if (cmpd == NULL)
         jlang_logFatal(1, "out of memory, malloc failed\n");
+
     cmpd->t = AST_COMPOUND;
     cmpd->compound.children = NULL;
     cmpd->compound.nchildren = 0;
 
-    jlang_token *tok;
-    while ((tok = jlang_lexerNext())->t != TOKEN_EOF)
+    while ((*tok)->t != TOKEN_EOF)
     {
         cmpd->compound.nchildren++;
-        if (cmpd->compound.children == NULL)
-        {
-            cmpd->compound.children = malloc(sizeof(jlang_ast *));
-            if (cmpd->compound.children == NULL)
-                jlang_logFatal(1, "out of memory, malloc failed\n");
-        }
-        else
-        {
-            cmpd->compound.children =
-                realloc(cmpd->compound.children,
-                        sizeof(jlang_ast *) * cmpd->compound.nchildren);
-            if (cmpd->compound.children == NULL)
-                jlang_logFatal(1, "out of memory, realloc failed\n");
-        }
+        jlang_ast **new_children =
+            realloc(cmpd->compound.children,
+                    sizeof(jlang_ast *) * cmpd->compound.nchildren);
+        if (!new_children)
+            jlang_logFatal(1, "out of memory, realloc failed\n");
 
+        cmpd->compound.children = new_children;
         cmpd->compound.children[cmpd->compound.nchildren - 1] = parse_expr(tok);
-
-        jlang_tokenFree(tok);
     }
 
     return cmpd;
 }
 
-static jlang_ast *parse_expr(jlang_token *tok)
+static jlang_ast *parse_expr(jlang_token **tok)
 {
-    switch (tok->t)
+    jlang_ast *ast = NULL;
+    switch ((*tok)->t)
     {
     case TOKEN_ID:
-        return parse_id(tok);
-    case TOKEN_LPAREN:
-        jlang_logInfo("lparen\n");
-        return NULL; // parse list
+        ast = parse_id(tok);
+        *tok = parser_eaa(*tok, TOKEN_SEMICOLON);
+        break;
     case TOKEN_NUMBER:
-        jlang_logInfo("number: %s\n", tok->val);
-        return NULL; // parse number
-    default:
-        jlang_logInfo("something else");
-        return NULL;
-        // jlang_logFatal(1, "jlang [ERROR] unexpected token");
-    }
+        ast = malloc(sizeof(jlang_ast));
+        if (!ast)
+            jlang_logFatal(1, "out of memory\n");
 
-    // every expression must end with ;
-    jlang_tokenFree(parser_eaa(tok, TOKEN_SEMICOLON));
+        ast->t = AST_LITERAL_INT;
+        ast->literalint.val = atoi((*tok)->val);
+
+        *tok = parser_eaa(*tok, TOKEN_NUMBER);
+        break;
+    default:
+        jlang_logFatal(1, "Unexpected token %s at %zu:%zu\n",
+                       jlang_tokenNames[(*tok)->t], (*tok)->pos.line,
+                       (*tok)->pos.col);
+    }
+    return ast;
 }
 
 static jlang_token *parser_eaa(jlang_token *tok, jlang_tokenType t)
 {
     if (tok->t != t)
-        jlang_logFatal(1, "jlang [ERROR] expected %s, got %s\n",
-                       jlang_tokenNames[t], jlang_tokenNames[tok->t]);
+        jlang_logFatal(1, "jlang [ERROR] expected %s, got %s at %zu:%zu\n",
+                       jlang_tokenNames[t], jlang_tokenNames[tok->t],
+                       tok->pos.line, tok->pos.col);
     jlang_tokenFree(tok);
     return jlang_lexerNext();
 }
 
-static jlang_ast *parse_id(jlang_token *tok)
+static jlang_ast *parse_id(jlang_token **tok)
 {
-    char *idname = strdup(tok->val);
+    char *idname = strdup((*tok)->val);
 
-    tok = parser_eaa(tok, TOKEN_ID);
+    *tok = parser_eaa(*tok, TOKEN_ID);
     // var or func definition
-    if (tok->t == TOKEN_COLON)
+    if ((*tok)->t == TOKEN_COLON)
     {
-        tok = parser_eaa(tok, TOKEN_COLON);
-        char *vartype = strdup(tok->val);
-        tok = parser_eaa(tok, TOKEN_ID);
+        *tok = parser_eaa(*tok, TOKEN_COLON);
         // variable declaration
-        if (tok->t == TOKEN_EQUALS)
+        if ((*tok)->t == TOKEN_ID)
         {
-            tok = parser_eaa(tok, TOKEN_EQUALS);
-            jlang_ast *ast = malloc(sizeof(jlang_ast *));
+            char *vartype = strdup((*tok)->val);
+            *tok = parser_eaa(*tok, TOKEN_ID);
+            *tok = parser_eaa(*tok, TOKEN_EQUALS);
+
+            jlang_ast *ast = malloc(sizeof(jlang_ast));
             if (ast == NULL)
                 jlang_logFatal(1, "out of memory, malloc failed\n");
-            ast->t = AST_ASSIGNMENT;
 
+            ast->t = AST_ASSIGNMENT;
             ast->assignment.name = idname;
             ast->assignment.type = vartype;
             ast->assignment.value = parse_expr(tok);
@@ -151,18 +154,28 @@ static jlang_ast *parse_id(jlang_token *tok)
         }
 
         // function definition
-        if (vartype != NULL && vartype[0] == '(')
+        *tok = parser_eaa(*tok, TOKEN_LPAREN);
+        if ((*tok)->t == TOKEN_RPAREN) // no args
         {
-            jlang_ast *ast = malloc(sizeof(jlang_ast *));
+            *tok = parser_eaa(*tok, TOKEN_RPAREN);
+            char *rettype = strdup((*tok)->val);
+            *tok = parser_eaa(*tok, TOKEN_ID);
+
+            jlang_ast *ast = malloc(sizeof(jlang_ast));
             if (ast == NULL)
                 jlang_logFatal(1, "out of memory, malloc failed\n");
+
             ast->t = AST_FUNCTION_DECL;
             ast->function_decl.name = idname;
-            ast->function_decl.ret_type = vartype;
-            ast->function_decl.body = parse_compound();
+            ast->function_decl.ret_type = rettype;
+
+            *tok = parser_eaa(*tok, TOKEN_EQUALS);
+            ast->function_decl.body = parse_compound(tok);
+
             return ast;
         }
     }
+
     // variable access or function call
     // TODO
     return NULL;

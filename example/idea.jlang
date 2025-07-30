@@ -1,7 +1,7 @@
 
 // the main function is the entry point of the program
 // the language is procedural like c
-main: ()int
+main: ()int = 
     // variables are defined like name: type
     // optionally you can add the = sign to assign a value
     a: int = 1;

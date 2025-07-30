@@ -28,7 +28,10 @@ void jlang_tokenPrint(jlang_token *token)
 
 void jlang_tokenFree(jlang_token *token)
 {
-    if (token->val)
-        free(token->val);
-    free(token);
+    if (token)
+    {
+        if (token->val)
+            free(token->val);
+        free(token);
+    }
 }

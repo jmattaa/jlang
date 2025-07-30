@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     jlang_lexerInit(src); // this has to be before jlang_parse cuz it
                           // initializes the global LEXER
     jlang_ast *root = jlang_parse();
+    jlang_debugprintast(root);
     jlang_freeAst(root);
 
     free(src);

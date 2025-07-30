@@ -7,4 +7,9 @@
 jlang_ast *jlang_parse();
 void jlang_freeAst(jlang_ast *ast);
 
+#ifdef JL_DEBUG
+void jlang_debugprintast_impl(jlang_ast *ast, int indent);
+#define jlang_debugprintast(ast) jlang_debugprintast_impl(ast, 0)
+#endif
+
 #endif

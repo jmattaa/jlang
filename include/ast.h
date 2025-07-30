@@ -6,7 +6,8 @@
     _X(AST_COMPOUND)                                                           \
     _X(AST_FUNCTION_DECL)                                                      \
     _X(AST_ASSIGNMENT)                                                         \
-    _X(AST_LITERAL)
+    _X(AST_LITERAL_STR)                                                        \
+    _X(AST_LITERAL_INT)
 
 typedef enum
 {
@@ -44,8 +45,18 @@ typedef struct ast
         struct
         {
             char *val;
-        } literal;
+        } literalstr;
+
+        struct
+        {
+            int val;
+        } literalint;
     };
 } jlang_ast;
+
+#ifdef JL_DEBUG
+void jlang_debugprintast_impl(jlang_ast *ast, int indent);
+#define jlang_debugprintast(ast) jlang_debugprintast_impl(ast, 0)
+#endif
 
 #endif
