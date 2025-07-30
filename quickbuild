@@ -8,11 +8,11 @@ lflags = "";
 lflagsdev = "-g -fsanitize=address [lflags]";
 lflagsrel = "-O3 [lflags]";
 
-srcs = "src/*.c";
-devobjs = srcs: "src/*.c" -> "build/dev/*.o";
-relobjs = srcs: "src/*.c" -> "build/rel/*.o";
+srcs = "./src/*.c";
+devobjs = srcs: "./src/*.c" -> "./build/dev/*.o";
+relobjs = srcs: "./src/*.c" -> "./build/rel/*.o";
 
-headers = "include/*.h";
+headers = "./include/*.h";
 
 dev_exec = "jlang";
 rel_exec = "build/rel/jlang";
@@ -44,12 +44,12 @@ rel_exec = "build/rel/jlang";
 
 
 devobjs as obj {
-    obj_src = obj: "build/dev/*.o" -> "src/*.c";
+    obj_src = obj: "./build/dev/*.o" -> "./src/*.c";
     run = "[cc] [cflagsdev] -c [obj_src] -o [obj]";
 }
 
 relobjs as obj {
-    obj_src = obj: "build/rel/*.o" -> "src/*.c";
+    obj_src = obj: "./build/rel/*.o" -> "./src/*.c";
     run = "[cc] [cflagsrel] -c [obj_src] -o [obj]";
 }
 
@@ -82,3 +82,4 @@ relobjs as obj {
 "echocompileflags" {
     run = "echo [cc] [cflagsdev] -c";
 }
+
