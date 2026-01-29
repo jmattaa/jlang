@@ -8,7 +8,7 @@
 #include <string.h>
 
 // ------------------------ helper function decl ------------------------------
-static jlang_ast *parse_compound(jlang_token **tok);
+static jlang_ast *parse_compound(jlang_token **tok, jlang_tokenType et);
 static jlang_ast *parse_expr(jlang_token **tok);
 static jlang_token *parser_eaa(jlang_token *tok,
                                jlang_tokenType t); // expect and advance
@@ -19,7 +19,7 @@ static jlang_ast *parse_id(jlang_token **tok);
 jlang_ast *jlang_parse()
 {
     jlang_token *tok = jlang_lexerNext();
-    return parse_compound(&tok);
+    return parse_compound(&tok, TOKEN_EOF);
 }
 
 void jlang_freeAst(jlang_ast *ast)
@@ -62,7 +62,7 @@ void jlang_freeAst(jlang_ast *ast)
 }
 
 // ---------------------------- helper function impl --------------------------
-static jlang_ast *parse_compound(jlang_token **tok)
+static jlang_ast *parse_compound(jlang_token **tok, jlang_tokenType et)
 {
     jlang_ast *cmpd = malloc(sizeof(jlang_ast));
     if (cmpd == NULL)
@@ -72,7 +72,7 @@ static jlang_ast *parse_compound(jlang_token **tok)
     cmpd->compound.children = NULL;
     cmpd->compound.nchildren = 0;
 
-    while ((*tok)->t != TOKEN_EOF)
+    while ((*tok)->t != et)
     {
         cmpd->compound.nchildren++;
         jlang_ast **new_children =
@@ -170,7 +170,7 @@ static jlang_ast *parse_id(jlang_token **tok)
             ast->function_decl.ret_type = rettype;
 
             *tok = parser_eaa(*tok, TOKEN_EQUALS);
-            ast->function_decl.body = parse_compound(tok);
+            ast->function_decl.body = parse_compound(tok, TOKEN_SEMICOLON);
 
             return ast;
         }
