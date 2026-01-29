@@ -83,6 +83,8 @@ static jlang_ast *parse_compound(jlang_token **tok, jlang_tokenType et)
 
         cmpd->compound.children = new_children;
         cmpd->compound.children[cmpd->compound.nchildren - 1] = parse_expr(tok);
+
+        *tok = parser_eaa(*tok, TOKEN_SEMICOLON);
     }
 
     return cmpd;
@@ -95,7 +97,6 @@ static jlang_ast *parse_expr(jlang_token **tok)
     {
     case TOKEN_ID:
         ast = parse_id(tok);
-        *tok = parser_eaa(*tok, TOKEN_SEMICOLON);
         break;
     case TOKEN_NUMBER:
         ast = malloc(sizeof(jlang_ast));
