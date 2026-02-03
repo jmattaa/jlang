@@ -38,6 +38,12 @@ jlang_token *jlang_lexerNext()
 
         switch (LEXER.c)
         {
+        case '#': // comment skip util \n
+        {
+            while (LEXER.c != '\n')
+                lexer_advance();
+            break;
+        }
         case '=':
             return lexer_advance_with_token(TOKEN_EQUALS);
         case '(':
